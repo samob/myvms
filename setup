@@ -1,6 +1,6 @@
 https://github.com/churchers/vm-bhyve
 
-1. pkg install vm-bhyve
+1. pkg install vm-bhyve grub2-bhyve bhyve-firmware tmux
 2. zfs create ghost/virtuals
    zfs set mountpoint=/vms ghost/virtuals
 3. sysrc vm_enable="YES"
@@ -9,7 +9,10 @@ https://github.com/churchers/vm-bhyve
 6. cp /usr/local/share/examples/vm-bhyve/* /vms/.templates/
 7. vm switch create public
 8. vm switch add public em0
-9. vm iso https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso
+9. vm iso 
+https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.1/FreeBSD-13.1-RELEASE-amd64-disc1.iso
+https://releases.ubuntu.com/20.04.5/ubuntu-20.04.5-live-server-amd64.iso
+https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso
 10. vm create myguest
 11. vm install [-f] myguest FreeBSD-11.2-RELEASE-amd64-bootonly.iso
 12. vm console myguest
