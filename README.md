@@ -1,7 +1,7 @@
 # myvms
 Bhyve Virtual Manager configuration
 
-1. pkg install vm-bhyve grub2-bhyve bhyve-firmware
+1. pkg install vm-bhyve grub2-bhyve bhyve-firmware qemu-tools
 2. zfs create neo/virtuals && zfs set mountpoint=/vms neo/virtuals (zfs set recordsize=64K neo/virtuals)
 3. sysrc vm_enable="YES"
 4. sysrc vm_dir="zfs:neo/virtuals"
