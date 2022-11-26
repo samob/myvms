@@ -1,0 +1,81 @@
+Rancher on Docker
+
+docker run -d --restart=unless-stopped --name myrancher -v /opt/rancher:/var/lib/rancher -p 80:80 -p 443:443 --privileged rancher/rancher
+docker ps
+docker logs  00305e7f73ee  2>&1 | grep "Bootstrap Password:"
+
+Rancher OS
+
+https://barryp.org/blog/entries/rancheros-isolinux-syslinux-on-freebsd-bhyve
+https://medium.com/@andoriyu/a-practical-guide-to-containers-on-freenas-for-a-depraved-psychopath-c212203c0394
+
+GNU GRUB  version 2.00
+
+Minimal BASH-like line editing is supported. For the first word, TAB
+lists possible command completions. Anywhere else TAB lists possible
+device or file completions.
+
+grub> set pager=1
+grub> ls -l (cd0)/boot
+grub> linux (cd0)/boot/vmlinuz-4.14.138-rancher rancher.autologin=tty1 rancher.autologin=ttyS0 rancher.autologin=ttyS1 rancher.autologin=ttyS1 console=tty1 console=ttyS0 console=ttyS1 printk.devkmsg=on panic=10
+grub> initrd (cd0)/boot/initrd-v1.5.8
+grub> boot
+
+# Old reference
+
+grub> set root=(cd0,msdos1)
+grub> linux /boot/vmlinuz-4.14.138-rancher ro rancher.password=SomeRandomPassword
+grub> initrd /boot/initrd-v1.5.8 
+grub> boot
+
+vi cloud-config.yml
+
+#cloud-config
+ssh_authorized_keys:
+  - ssh-rsa XXXX== samob@osa.xyz.si
+
+#/var/lib/rancher/conf/cloud-config.d/netconfig-config.yml
+#cloud-config
+hostname: rancher.reprap.si
+ssh_authorized_keys:
+  - ssh-rsa XXXX== samob@osa.xyz.si
+
+#/var/lib/rancher/conf/cloud-config.d/netconfig-config.yml
+rancher:
+  network:
+    interfaces:
+      eth0:
+        addresses:
+          - 192.168.1.11/24
+        gateway: 192.168.1.1
+        dhcp: false
+    dns:
+      nameservers:
+        - 192.168.1.1
+        - 8.8.8.8
+        - 8.8.4.4
+        
+### Install
+[rancher@rancher ~]$ sudo ros config validate -i cloud-config.yml
+[rancher@rancher ~]$ sudo ros install -c cloud-config.yml -d /dev/vda
+
+# vi /vms/rancher/grub.cfg
+
+set root=(hd0,1) 
+linux /boot/vmlinuz* printk.devkmsg=on rancher.state.dev=LABEL=RANCHER_STATE rancher.state.wait console=tty0 ro rancher.password=passWord99123
+initrd /boot/initrd*
+boot
+
+
+grub> ls -alh 
+DIR          2021-02-05 19:28:57 Friday      ./
+DIR          2021-02-05 19:28:57 Friday      ../
+147          2021-02-05 19:28:57 Friday      global.cfg
+120.32M      2021-02-05 19:28:57 Friday      initrd-v1.5.8
+DIR          2021-02-05 19:28:57 Friday      isolinux/
+1.34K        2021-02-05 19:28:57 Friday      linux-current.cfg
+12.44K       2021-02-05 19:28:57 Friday      rancher.png
+5.30M        2021-02-05 19:28:57 Friday      vmlinuz-4.14.138-rancher
+
+
+docker logs  88a99e7466ec  2>&1 | grep "Bootstrap Password:"
